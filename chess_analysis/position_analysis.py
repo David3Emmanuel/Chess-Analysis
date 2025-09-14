@@ -1,7 +1,7 @@
 from .analysis import Analysis
 from .analysis_steps import evaluate_board
 import chess
-from chess import PieceType, WHITE, BLACK
+from chess import Board, PieceType, WHITE, BLACK
 
 PIECE_VALUES: dict[PieceType, int] = {
     chess.PAWN: 1,
@@ -90,11 +90,30 @@ def evaluate_mobility(analysis: Analysis):
     analysis['mobility'] = mobility[WHITE] - mobility[BLACK]
     return mobility
 
+def check_castled(analysis: Analysis):
+    board = analysis.board
+    has_castled = [False, False]
+    
+    temp_board = Board()
+    for move in board.move_stack:
+        if temp_board.is_castling(move):
+            has_castled[temp_board.turn] = True
+        temp_board.push(move)
+        if has_castled[WHITE] and has_castled[BLACK]:
+            break
+
+    analysis['white_has_castled'] = has_castled[WHITE]
+    analysis['black_has_castled'] = has_castled[BLACK]
+    
+    return has_castled
+
 def position_summary(analysis: Analysis):
     summary = {feature: analysis[feature] for feature in [
         'material',
         'development',
-        'mobility'
+        'mobility',
+        'white_has_castled',
+        'black_has_castled'
     ]}
     
     eval_value = analysis['eval']
@@ -107,4 +126,10 @@ def position_summary(analysis: Analysis):
         
     return summary
 
-position_analysis = Analysis() | evaluate_board | count_material | measure_development | evaluate_mobility | position_summary
+position_analysis = (Analysis() 
+                   | evaluate_board 
+                   | count_material 
+                   | measure_development 
+                   | evaluate_mobility 
+                   | check_castled 
+                   | position_summary)
