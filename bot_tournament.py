@@ -84,27 +84,13 @@ def run_tournament(players, n_rounds=1, games_per_round=1, csv_filename='tournam
                 print(f"      Game {game_counter} data saved to {csv_filename} ({len(game_positions)} positions)")
     
     df = pd.DataFrame(all_position_data)
-    
-    print(f"\nTournament completed!")
-    print(f"Total games played: {game_counter}")
-    print(f"Total positions analyzed: {len(df)}")
-    print(f"Data shape: {df.shape}")
     print(f"Saved to: {csv_filename}")
-    
+        
     return df
 
 tournament_players = [engine_player, random_player]
-n_rounds = 10
-csv_file = 'tournament_results.csv'
-tournament_df = run_tournament(tournament_players, n_rounds=n_rounds, games_per_round=4, csv_filename=csv_file)
+tournament_df = run_tournament(tournament_players)
 
-print(f"Final results available in: {csv_file}")
-
-print("\nTournament Summary:")
-print("=" * 50)
-
-# Game results by player combination
-game_results = tournament_df.groupby(['white_player', 'black_player', 'tournament_game'])['game_result'].first().reset_index()
-result_summary = game_results.groupby(['white_player', 'black_player'])['game_result'].value_counts().unstack(fill_value=0)
-print("Game Results by Player Combination:")
-print(result_summary)
+print(f"\nTournament completed!")
+print(f"Total positions analyzed: {len(tournament_df)}")
+print(f"Data shape: {tournament_df.shape}")
