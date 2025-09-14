@@ -22,6 +22,8 @@ def count_material(analysis: Analysis):
     
     analysis['material_points'] = points
     analysis['material'] = points[WHITE] - points[BLACK]
+    analysis['white_material'] = points[WHITE]
+    analysis['black_material'] = points[BLACK]
     return points
 
 def measure_development(analysis: Analysis):
@@ -70,6 +72,8 @@ def measure_development(analysis: Analysis):
                 development[color] += developed * 1
 
     analysis['development'] = development[WHITE] - development[BLACK]
+    analysis['white_development'] = development[WHITE]
+    analysis['black_development'] = development[BLACK]
     return development
 
 def evaluate_mobility(analysis: Analysis):
@@ -88,6 +92,8 @@ def evaluate_mobility(analysis: Analysis):
     board.turn = turn
 
     analysis['mobility'] = mobility[WHITE] - mobility[BLACK]
+    analysis['white_mobility'] = mobility[WHITE]
+    analysis['black_mobility'] = mobility[BLACK]
     return mobility
 
 def check_castled(analysis: Analysis):
@@ -110,8 +116,14 @@ def check_castled(analysis: Analysis):
 def position_summary(analysis: Analysis):
     summary = {feature: analysis[feature] for feature in [
         'material',
+        'white_material',
+        'black_material',
         'development',
+        'white_development',
+        'black_development',
         'mobility',
+        'white_mobility',
+        'black_mobility',
         'white_has_castled',
         'black_has_castled'
     ]}
