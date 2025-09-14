@@ -1,3 +1,4 @@
+from random import random
 import chess
 import chess.svg
 import chess.pgn
@@ -35,3 +36,25 @@ def save_position_history(position_history):
             f.write(f"Development: {analysis.get('development', 0):+.1f}\n")
             f.write(f"Mobility: {analysis.get('mobility', 0):+.1f}\n")
             f.write(f"Evaluation: {analysis.get('eval', 0):+.1f}\n")
+
+def random_first_moves(white_player, black_player, random_player, prob=0.25):
+    initial_moves = []
+    temp_board = chess.Board()
+    
+    white_opening_move = None
+    if random() < prob:
+        white_opening_move = random_player(temp_board)
+    else:
+        white_opening_move = white_player(temp_board)
+    
+    initial_moves.append(temp_board.san(white_opening_move))
+    temp_board.push(white_opening_move)
+
+    black_opening_move = None
+    if random() < prob:
+        black_opening_move = random_player(temp_board)
+    else:
+        black_opening_move = black_player(temp_board)
+
+    initial_moves.append(temp_board.san(black_opening_move))
+    return initial_moves
