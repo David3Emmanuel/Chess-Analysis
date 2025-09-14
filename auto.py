@@ -17,6 +17,9 @@ while not (board.is_game_over() or is_closed()):
     print(f'{player['name']} - {board.san(move)}')
     board.push(move)
     display_board(board, move, pov=chess.WHITE)
+    
+    position = position_analysis(board)
+    print(position)
 
 finish_display()
 export_game(board, players)
