@@ -1,5 +1,5 @@
-from analysis import Analysis
-from analysis_steps import evaluate_board
+from .analysis import Analysis
+from .analysis_steps import evaluate_board
 import chess
 from chess import PieceType, WHITE, BLACK
 
@@ -98,7 +98,6 @@ def position_summary(analysis: Analysis):
     ]}
     
     eval_value = analysis['eval']
-    if abs(eval_value) > 20: print(eval_value)
     if eval_value >= 20:
         summary['eval'] = 20
     elif eval_value <= -20:

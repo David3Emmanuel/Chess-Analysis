@@ -1,10 +1,8 @@
 import chess
-from typing import Optional
-from analysis import Analysis
-from util import display_board, export_game, save_position_history
-from player import engine_player, random_player
-from display import is_closed, finish_display, plot_position_history
-from position_analysis import position_analysis
+from .analysis import Analysis
+from .util import display_board, export_game, save_position_history
+from .display import is_closed, finish_display, plot_position_history
+from .position_analysis import position_analysis
 
 
 def setup_game(players: tuple[Analysis, Analysis], initial_moves: list[str]):

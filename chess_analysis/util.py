@@ -2,8 +2,8 @@ import chess
 import chess.svg
 import chess.pgn
 from typing import Optional
-from display import display_svg
-from analysis import Analysis
+from .display import display_svg
+from .analysis import Analysis
 
 def display_board(board: chess.Board, move: Optional[chess.Move] = None, pov: Optional[chess.Color] = None) -> None:
     svg = chess.svg.board(

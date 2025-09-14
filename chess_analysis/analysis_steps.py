@@ -1,6 +1,6 @@
 import random
 from typing import Optional
-from analysis import Analysis
+from .analysis import Analysis
 import chess
 
 def evaluate_board(analysis: Analysis) -> tuple[float, Optional[chess.Move], Optional[int]]:

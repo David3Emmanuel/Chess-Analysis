@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtSvg, QtCore
-from typing import Callable, Optional
+from typing import Optional
 from matplotlib import pyplot as plt
 
 app = QtWidgets.QApplication.instance()
