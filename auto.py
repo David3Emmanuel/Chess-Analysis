@@ -19,7 +19,7 @@ while not (board.is_game_over() or is_closed()):
     display_board(board, move, pov=chess.WHITE)
     
     position = position_analysis(board)
-    print(position)
+    input(position)
 
 finish_display()
 export_game(board, players)
