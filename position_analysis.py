@@ -71,10 +71,29 @@ def measure_development(analysis: Analysis):
     analysis['development'] = development[WHITE] - development[BLACK]
     return development
 
+def evaluate_mobility(analysis: Analysis):
+    board = analysis.board
+    mobility = [0, 0]
+    turn = board.turn
+
+    for color in [WHITE, BLACK]:
+        board.turn = color
+        # Count the number of legal moves for each piece
+        for move in board.legal_moves:
+            piece = board.piece_at(move.from_square)
+            if piece and piece.color == color:
+                mobility[color] += 1
+
+    board.turn = turn
+
+    analysis['mobility'] = mobility[WHITE] - mobility[BLACK]
+    return mobility
+
 def position_summary(analysis: Analysis):
     return {feature: analysis[feature] for feature in [
         'material',
-        'development'
+        'development',
+        'mobility'
     ]}
 
-position_analysis = Analysis() | count_material | measure_development | position_summary
+position_analysis = Analysis() | count_material | measure_development | evaluate_mobility | position_summary
