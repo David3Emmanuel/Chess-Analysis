@@ -34,3 +34,4 @@ def save_position_history(position_history):
             f.write(f"Material: {analysis.get('material', 0):+.1f}\n")
             f.write(f"Development: {analysis.get('development', 0):+.1f}\n")
             f.write(f"Mobility: {analysis.get('mobility', 0):+.1f}\n")
+            f.write(f"Evaluation: {analysis.get('eval', 0):+.1f}\n")

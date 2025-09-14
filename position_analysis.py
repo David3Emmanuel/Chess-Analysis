@@ -1,4 +1,5 @@
 from analysis import Analysis
+from analysis_steps import evaluate_board
 import chess
 from chess import PieceType, WHITE, BLACK
 
@@ -90,10 +91,21 @@ def evaluate_mobility(analysis: Analysis):
     return mobility
 
 def position_summary(analysis: Analysis):
-    return {feature: analysis[feature] for feature in [
+    summary = {feature: analysis[feature] for feature in [
         'material',
         'development',
         'mobility'
     ]}
+    
+    eval_value = analysis['eval']
+    if abs(eval_value) > 20: print(eval_value)
+    if eval_value >= 20:
+        summary['eval'] = 20
+    elif eval_value <= -20:
+        summary['eval'] = -20
+    else:
+        summary['eval'] = eval_value
+        
+    return summary
 
-position_analysis = Analysis() | count_material | measure_development | evaluate_mobility | position_summary
+position_analysis = Analysis() | evaluate_board | count_material | measure_development | evaluate_mobility | position_summary

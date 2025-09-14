@@ -38,11 +38,15 @@ def plot_position_history(position_history):
     material = [entry['analysis'].get('material', 0) for entry in position_history]
     development = [entry['analysis'].get('development', 0) for entry in position_history]
     mobility = [entry['analysis'].get('mobility', 0) for entry in position_history]
+    evals = [entry['analysis'].get('eval', 0) for entry in position_history]
 
     plt.figure(figsize=(12, 6))
+    
     plt.plot(moves, material, label='Material', marker='o')
     plt.plot(moves, development, label='Development', marker='o')
     plt.plot(moves, mobility, label='Mobility', marker='o')
+    plt.plot(moves, evals, label='Evaluation', marker='o')
+    
     plt.title('Position Analysis Over Time')
     plt.xlabel('Move Number')
     plt.ylabel('Evaluation')
