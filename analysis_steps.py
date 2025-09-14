@@ -6,22 +6,32 @@ import chess
 def evaluate_board(analysis: Analysis) -> tuple[float, Optional[chess.Move], Optional[int]]:
     board = analysis.board
     engine = analysis.engine
-
-    engine.set_fen_position(board.fen())
-    raw_eval = engine.get_evaluation()
-    best_move_uci = engine.get_best_move()
+    
+    move = None
     mate_in = None
 
-    if raw_eval['type'] == 'cp':
-        eval = raw_eval['value'] / 100.0
+    if board.is_game_over():
+        result = board.result()
+        if result == "1-0":
+            eval = float('inf')
+        elif result == "0-1":
+            eval = float('-inf')
+        else:
+            eval = 0
+    
     else:
-        mate_in = abs(raw_eval['value'])
-        eval = float('inf') if raw_eval['value'] > 0 else float('-inf')
+        engine.set_fen_position(board.fen())
+        raw_eval = engine.get_evaluation()
+        best_move_uci = engine.get_best_move()
 
-    if best_move_uci:
-        move = board.parse_uci(best_move_uci)
-    else:
-        move = None
+        if raw_eval['type'] == 'cp':
+            eval = raw_eval['value'] / 100.0
+        else:
+            mate_in = abs(raw_eval['value'])
+            eval = float('inf') if raw_eval['value'] > 0 else float('-inf')
+
+        if best_move_uci:
+            move = board.parse_uci(best_move_uci)
     
     analysis['eval'] = eval
     analysis['best_move'] = move
