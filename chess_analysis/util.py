@@ -2,10 +2,10 @@ import chess
 import chess.svg
 import chess.pgn
 from typing import Optional
-from .display import display_svg
 from .analysis import Analysis
 
 def display_board(board: chess.Board, move: Optional[chess.Move] = None, pov: Optional[chess.Color] = None) -> None:
+    from .display import display_svg
     svg = chess.svg.board(
         board, size=400,
         lastmove=move,

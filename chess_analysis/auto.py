@@ -1,8 +1,8 @@
 import chess
 from .analysis import Analysis
 from .util import display_board, export_game, save_position_history
-from .display import is_closed, finish_display, plot_position_history
 from .position_analysis import position_analysis
+from typing import Callable, Optional
 
 
 def setup_game(players: tuple[Analysis, Analysis], initial_moves: list[str]):
@@ -33,7 +33,7 @@ def setup_game(players: tuple[Analysis, Analysis], initial_moves: list[str]):
     return board, players, position_history
 
 
-def play_game(board, players, position_history):
+def play_game(board, players, position_history, is_closed: Optional[Callable]=None):
     """
     Play the chess game until completion or display is closed.
     
@@ -45,14 +45,14 @@ def play_game(board, players, position_history):
     Returns:
         None: Modifies board and position_history in place
     """
-    while not (board.is_game_over() or is_closed()):
+    while (not (board.is_game_over()) and (is_closed is None or not is_closed())):
         player = players[1 - board.turn]
         move = player(board)
         move_san = board.san(move)
-        print(f'{player["name"]} - {move_san}')
+        if is_closed: print(f'{player["name"]} - {move_san}')
         board.push(move)
-        display_board(board, move, pov=chess.WHITE)
-        
+        if is_closed: display_board(board, move, pov=chess.WHITE)
+
         position = position_analysis(board)
         position_history.append({
             'move_number': len(position_history),
@@ -71,13 +71,19 @@ def finalize_game(board, players, position_history):
         players (list): List of player functions
         position_history (list): Position history data
     """
+    from .display import finish_display, plot_position_history
+    
     finish_display()
     save_position_history(position_history)
     plot_position_history(position_history)
     export_game(board, players)
 
 
-def run_auto_game(players: tuple[Analysis, Analysis], initial_moves: list[str] = []):
+def run_auto_game(
+    players: tuple[Analysis, Analysis],
+    initial_moves: list[str] = [],
+    bare=False
+):
     """
     Run a complete automated chess game.
     
@@ -85,6 +91,12 @@ def run_auto_game(players: tuple[Analysis, Analysis], initial_moves: list[str] =
         players (list): List of two player functions [white_player, black_player]
         initial_moves (list): List of moves in SAN notation
     """
+    is_closed = None
+    if not bare:
+        from .display import is_closed
+    
     board, players, position_history = setup_game(players, initial_moves)
-    play_game(board, players, position_history)
-    finalize_game(board, players, position_history)
+    play_game(board, players, position_history, is_closed=is_closed)
+    if not bare: finalize_game(board, players, position_history)
+    
+    return board, position_history
