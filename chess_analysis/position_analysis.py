@@ -127,7 +127,14 @@ def position_summary(analysis: Analysis):
         'white_has_castled',
         'black_has_castled',
         'fullmove_number',
-        'halfmove_clock'
+        'halfmove_clock',
+        'furthest_rank',
+        'white_furthest_rank',
+        'black_furthest_rank',
+        'white_king_file',
+        'white_king_rank',
+        'black_king_file',
+        'black_king_rank'
     ]}
     
     eval_value = analysis['eval']
@@ -146,6 +153,38 @@ def count_moves(analysis: Analysis):
     analysis['halfmove_clock'] = board.halfmove_clock
     return board.fullmove_number, board.halfmove_clock
 
+def get_furthest_rank(analysis: Analysis):
+    board = analysis.board
+    furthest_rank = [0, 0]
+
+    for square in chess.SQUARES:
+        piece = board.piece_at(square)
+        if piece:
+            color = piece.color
+            rank = chess.square_rank(square)
+            if color == BLACK: rank = 7 - rank
+            if rank > furthest_rank[color]:
+                furthest_rank[color] = rank
+
+    analysis['furthest_rank'] = furthest_rank[WHITE] - furthest_rank[BLACK]
+    analysis['white_furthest_rank'] = furthest_rank[WHITE]
+    analysis['black_furthest_rank'] = furthest_rank[BLACK]
+    return furthest_rank
+
+def get_king_positions(analysis: Analysis):
+    board = analysis.board
+    for square, piece in board.piece_map().items():
+        if piece.piece_type == chess.KING:
+            rank = chess.square_rank(square)
+            if piece.color == BLACK: rank = 7 - rank
+            file = chess.square_file(square)
+            if piece.color == WHITE:
+                analysis['white_king_file'] = file
+                analysis['white_king_rank'] = rank
+            else:
+                analysis['black_king_file'] = file
+                analysis['black_king_rank'] = rank
+
 position_analysis = (Analysis() 
                    | evaluate_board 
                    | count_material 
@@ -153,4 +192,6 @@ position_analysis = (Analysis()
                    | evaluate_mobility 
                    | check_castled
                    | count_moves
+                   | get_furthest_rank
+                   | get_king_positions
                    | position_summary)
