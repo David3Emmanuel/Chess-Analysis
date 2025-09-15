@@ -1,9 +1,10 @@
 import random
-from typing import Optional
-from .analysis import Analysis
+from typing import Optional, TYPE_CHECKING
 import chess
+if TYPE_CHECKING:
+    from .analysis import Analysis
 
-def evaluate_board(analysis: Analysis) -> tuple[float, Optional[chess.Move], Optional[int]]:
+def evaluate_board(analysis: 'Analysis') -> tuple[float, Optional[chess.Move], Optional[int]]:
     board = analysis.board
     engine = analysis.engine
     
@@ -39,7 +40,7 @@ def evaluate_board(analysis: Analysis) -> tuple[float, Optional[chess.Move], Opt
 
     return eval, move, mate_in
 
-def process_eval(analysis: Analysis):
+def process_eval(analysis: 'Analysis'):
     eval = analysis['eval']
     move = analysis['best_move']
     mate_in = analysis['mate_in']
@@ -56,7 +57,7 @@ def process_eval(analysis: Analysis):
     analysis['result'] = result
     return move, result
 
-def random_move(analysis: Analysis) -> Optional[chess.Move]:
+def random_move(analysis: 'Analysis') -> Optional[chess.Move]:
     board = analysis.board
     
     legal_moves = list(board.legal_moves)
@@ -65,10 +66,10 @@ def random_move(analysis: Analysis) -> Optional[chess.Move]:
     analysis['move'] = move
     return move
 
-def extract_move(analysis: Analysis) -> Optional[chess.Move]:
+def extract_move(analysis: 'Analysis') -> Optional[chess.Move]:
     return analysis['move']
 
-def human_move(analysis: Analysis) -> Optional[chess.Move]:
+def human_move(analysis: 'Analysis') -> Optional[chess.Move]:
     board = analysis.board
     
     print(board)

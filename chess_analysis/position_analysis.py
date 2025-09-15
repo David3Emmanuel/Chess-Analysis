@@ -1,7 +1,8 @@
-from .analysis import Analysis
 from .analysis_steps import evaluate_board
 import chess
 from chess import Board, PieceType, WHITE, BLACK
+from .analysis import Analysis
+
 
 PIECE_VALUES: dict[PieceType, int] = {
     chess.PAWN: 1,
@@ -12,7 +13,7 @@ PIECE_VALUES: dict[PieceType, int] = {
     chess.KING: 0
 }
 
-def count_material(analysis: Analysis):
+def count_material(analysis: 'Analysis'):
     board = analysis.board
     points = [0, 0]
     
@@ -26,7 +27,7 @@ def count_material(analysis: Analysis):
     analysis['black_material'] = points[BLACK]
     return points
 
-def measure_development(analysis: Analysis):
+def measure_development(analysis: 'Analysis'):
     board = analysis.board
     development = [0., 0.]
 
@@ -76,7 +77,7 @@ def measure_development(analysis: Analysis):
     analysis['black_development'] = development[BLACK]
     return development
 
-def evaluate_mobility(analysis: Analysis):
+def evaluate_mobility(analysis: 'Analysis'):
     board = analysis.board
     mobility = [0, 0]
     turn = board.turn
@@ -96,7 +97,7 @@ def evaluate_mobility(analysis: Analysis):
     analysis['black_mobility'] = mobility[BLACK]
     return mobility
 
-def check_castled(analysis: Analysis):
+def check_castled(analysis: 'Analysis'):
     board = analysis.board
     has_castled = [False, False]
     
@@ -113,7 +114,7 @@ def check_castled(analysis: Analysis):
     
     return has_castled
 
-def position_summary(analysis: Analysis):
+def position_summary(analysis: 'Analysis'):
     summary = {feature: analysis[feature] for feature in [
         'material',
         'white_material',
@@ -147,13 +148,13 @@ def position_summary(analysis: Analysis):
         
     return summary
 
-def count_moves(analysis: Analysis):
+def count_moves(analysis: 'Analysis'):
     board = analysis.board
     analysis['fullmove_number'] = board.fullmove_number
     analysis['halfmove_clock'] = board.halfmove_clock
     return board.fullmove_number, board.halfmove_clock
 
-def get_furthest_rank(analysis: Analysis):
+def get_furthest_rank(analysis: 'Analysis'):
     board = analysis.board
     furthest_rank = [0, 0]
 
@@ -171,7 +172,7 @@ def get_furthest_rank(analysis: Analysis):
     analysis['black_furthest_rank'] = furthest_rank[BLACK]
     return furthest_rank
 
-def get_king_positions(analysis: Analysis):
+def get_king_positions(analysis: 'Analysis'):
     board = analysis.board
     for square, piece in board.piece_map().items():
         if piece.piece_type == chess.KING:
