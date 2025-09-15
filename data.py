@@ -14,5 +14,6 @@ def load_data():
 
     X = df_numerical.values
     y = eval_column.values
+    feature_names = df_numerical.columns.tolist()
 
-    return X, y
+    return X, y, feature_names

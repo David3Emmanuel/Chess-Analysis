@@ -2,3 +2,4 @@ __pycache__/
 .venv/
 game.pgn
 analysis.txt
+tournament_results.csv
