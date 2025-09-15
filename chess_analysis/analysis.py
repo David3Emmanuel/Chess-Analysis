@@ -1,14 +1,18 @@
 from typing import Any, Callable, Optional
 import chess
-from stockfish import Stockfish
+from .engine import Engine, StockfishEngine
 
 class Analysis:
-    def __init__(self):
+    def __init__(self, engine: Optional[Engine] = None):
         self.pipeline = []
-        self.engine = Stockfish(path="stockfish", depth=15)
+        
+        if engine is None:
+            engine = StockfishEngine(path="stockfish", depth=15)
+        self.engine = engine
+        
         self.persist = {}
         self.reset()
-
+    
     def reset(self, board: Optional[chess.Board] = None):
         self.board = board if board else chess.Board()
         self.context = self.persist
@@ -32,3 +36,13 @@ class Analysis:
         for func in self.pipeline:
             out = func(self)
         return out
+
+    def copy(self) -> 'Analysis':
+        return self.copy_with_engine(self.engine)
+
+    def copy_with_engine(self, engine: Engine) -> 'Analysis':
+        new_analysis = Analysis(engine)
+        new_analysis.pipeline = self.pipeline.copy()
+        new_analysis.persist = self.persist.copy()
+        new_analysis.context = self.context.copy()
+        return new_analysis

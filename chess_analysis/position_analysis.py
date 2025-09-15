@@ -1,8 +1,11 @@
 from .analysis_steps import evaluate_board
 import chess
 from chess import Board, PieceType, WHITE, BLACK
+from typing import TYPE_CHECKING
 from .analysis import Analysis
 
+if TYPE_CHECKING:
+    from .engine import Engine
 
 PIECE_VALUES: dict[PieceType, int] = {
     chess.PAWN: 1,
@@ -139,6 +142,8 @@ def position_summary(analysis: 'Analysis'):
     ]}
     
     eval_value = analysis['eval']
+    if not eval_value: return summary
+    
     if eval_value >= 20:
         summary['eval'] = 20
     elif eval_value <= -20:
@@ -186,13 +191,16 @@ def get_king_positions(analysis: 'Analysis'):
                 analysis['black_king_file'] = file
                 analysis['black_king_rank'] = rank
 
-position_analysis = (Analysis() 
-                   | evaluate_board 
-                   | count_material 
-                   | measure_development 
-                   | evaluate_mobility 
-                   | check_castled
-                   | count_moves
-                   | get_furthest_rank
-                   | get_king_positions
-                   | position_summary)
+raw_eval = (Analysis()
+            | count_material 
+            | measure_development 
+            | evaluate_mobility 
+            | check_castled
+            | count_moves
+            | get_furthest_rank
+            | get_king_positions)
+position_analysis = raw_eval.copy() | evaluate_board | position_summary
+position_analysis_without_eval = raw_eval.copy() | position_summary
+
+def custom_position_analysis(engine: 'Engine'):
+    return position_analysis.copy_with_engine(engine)

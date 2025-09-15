@@ -21,7 +21,7 @@ def evaluate_board(analysis: 'Analysis') -> tuple[float, Optional[chess.Move], O
             eval = 0
     
     else:
-        engine.set_fen_position(board.fen())
+        engine.set_board(board)
         raw_eval = engine.get_evaluation()
         best_move_uci = engine.get_best_move()
 
