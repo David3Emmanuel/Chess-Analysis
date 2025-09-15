@@ -125,7 +125,9 @@ def position_summary(analysis: Analysis):
         'white_mobility',
         'black_mobility',
         'white_has_castled',
-        'black_has_castled'
+        'black_has_castled',
+        'fullmove_number',
+        'halfmove_clock'
     ]}
     
     eval_value = analysis['eval']
@@ -138,10 +140,17 @@ def position_summary(analysis: Analysis):
         
     return summary
 
+def count_moves(analysis: Analysis):
+    board = analysis.board
+    analysis['fullmove_number'] = board.fullmove_number
+    analysis['halfmove_clock'] = board.halfmove_clock
+    return board.fullmove_number, board.halfmove_clock
+
 position_analysis = (Analysis() 
                    | evaluate_board 
                    | count_material 
                    | measure_development 
                    | evaluate_mobility 
-                   | check_castled 
+                   | check_castled
+                   | count_moves
                    | position_summary)
